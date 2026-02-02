@@ -5,11 +5,11 @@ import {
   AbsoluteFill,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useDelayRender,
   useVideoConfig,
 } from "remotion";
+import { resolveSrc } from "../utils";
 
 const findCaptionAt = (captions: Caption[], timeMs: number) => {
   let lo = 0;
@@ -30,17 +30,18 @@ const findCaptionAt = (captions: Caption[], timeMs: number) => {
 
 export const VerticalCaptions: React.FC<{
   srtSrc: string;
-}> = ({ srtSrc }) => {
+  fontFamily?: string;
+  fontSize?: number;
+}> = ({ srtSrc, fontFamily, fontSize }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { delayRender, continueRender, cancelRender } = useDelayRender();
   const [handle] = useState(() => delayRender());
   const [captions, setCaptions] = useState<Caption[] | null>(null);
-  const normalizedSrtSrc = srtSrc.startsWith("/") ? srtSrc.slice(1) : srtSrc;
 
   const fetchCaptions = useCallback(async () => {
     try {
-      const response = await fetch(staticFile(normalizedSrtSrc));
+      const response = await fetch(resolveSrc(srtSrc));
       const text = await response.text();
       const parsed = parseSrt({ input: text });
       setCaptions(parsed.captions);
@@ -48,7 +49,7 @@ export const VerticalCaptions: React.FC<{
     } catch (e) {
       cancelRender(e);
     }
-  }, [cancelRender, continueRender, handle, normalizedSrtSrc]);
+  }, [cancelRender, continueRender, handle, srtSrc]);
 
   useEffect(() => {
     fetchCaptions();
@@ -112,13 +113,13 @@ export const VerticalCaptions: React.FC<{
             <span
               key={i}
               style={{
-                fontSize: 80,
+                fontSize: fontSize ?? 80,
                 fontWeight: 900,
                 color: "white",
                 opacity: opacity * exitOpacity,
                 transform: `scale(${scale}) translate(${floatX}px, ${floatY}px)`,
                 filter: `blur(${blur}px) drop-shadow(0 0 10px rgba(255,255,255,0.5))`,
-                fontFamily: "'Noto Sans SC', sans-serif",
+                fontFamily: fontFamily ?? "'Noto Sans SC', sans-serif",
                 marginBottom: "0.2em",
               }}
             >

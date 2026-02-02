@@ -1,12 +1,13 @@
 import { useAudioData, visualizeAudio } from "@remotion/media-utils";
-import { AbsoluteFill, interpolate, random, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
+import { resolveSrc } from "../utils";
 
 export const Atmosphere: React.FC<{
   audioSrc: string;
 }> = ({ audioSrc }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
-  const audioData = useAudioData(staticFile(audioSrc));
+  const audioData = useAudioData(resolveSrc(audioSrc));
 
   if (!audioData) {
     return null;
@@ -36,7 +37,7 @@ export const Atmosphere: React.FC<{
 
   return (
     <AbsoluteFill className="overflow-hidden bg-[#050505]">
-      <div
+      <div 
         className="absolute rounded-full blur-[120px] opacity-40"
         style={{
           width: width * 1.5,
@@ -47,7 +48,7 @@ export const Atmosphere: React.FC<{
           transform: `scale(${pulseScale}) translate(${Math.sin(t * 0.5) * 50}px, ${Math.cos(t * 0.5) * 50}px)`,
         }}
       />
-      <div
+      <div 
         className="absolute rounded-full blur-[100px] opacity-30"
         style={{
           width: width * 1.2,
@@ -87,10 +88,10 @@ export const Atmosphere: React.FC<{
         );
       })}
 
-      <AbsoluteFill
+      <AbsoluteFill 
         style={{
           background: 'radial-gradient(circle at center, transparent 40%, black 120%)'
-        }}
+        }} 
       />
     </AbsoluteFill>
   );

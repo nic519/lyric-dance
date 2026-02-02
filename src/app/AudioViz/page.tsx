@@ -2,32 +2,42 @@
 
 import { Player } from "@remotion/player";
 import type { NextPage } from "next";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { VIDEO_FPS } from "../../../types/constants";
 import { AudioViz } from "../../remotion/AudioViz/AudioViz";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 const AudioVizPage: NextPage = () => {
+  const [songTitle, setSongTitle] = useState("Midnight Dreams");
+  const [artistName, setArtistName] = useState("Cosmic Voyager");
+  const [description, setDescription] = useState("A journey through the stars and beyond.");
+  const [coverImg, setCoverImg] = useState("https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop");
+
   const inputProps = useMemo(() => {
     return {
       audioSrc: "demo/demo.mp3",
       srtSrc: "demo/demo.srt",
-      background: {
-        from: "#1a2a6c",
-        to: "#0b1020",
-      },
+      backgroundType: "Aurora" as const,
+      fontFamily: "Noto Sans SC",
+      fontSize: 80,
+      songTitle,
+      artistName,
+      description,
+      coverImg,
     };
-  }, []);
+  }, [songTitle, artistName, description, coverImg]);
 
   return (
-    <div className="max-w-screen-md m-auto mb-5">
+    <div className="max-w-screen-md m-auto mb-5 px-4">
       <div className="overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)] mb-10 mt-16">
         <Player
           component={AudioViz}
           inputProps={inputProps}
-          durationInFrames={30 * 10}
+          durationInFrames={30 * 60} // Extended duration for testing
           fps={VIDEO_FPS}
-          compositionHeight={1920 / 2}
-          compositionWidth={1080 / 2}
+          compositionHeight={1920}
+          compositionWidth={1080}
           acknowledgeRemotionLicense
           style={{
             width: "100%",
@@ -40,6 +50,50 @@ const AudioVizPage: NextPage = () => {
           loop
           initiallyMuted
         />
+      </div>
+
+      <div className="grid gap-6 p-6 border rounded-xl bg-card text-card-foreground shadow-sm">
+        <h2 className="text-2xl font-semibold tracking-tight">Song Information</h2>
+
+        <div className="grid gap-2">
+          <Label htmlFor="songTitle">Song Title</Label>
+          <Input
+            id="songTitle"
+            value={songTitle}
+            onChange={(e) => setSongTitle(e.target.value)}
+            placeholder="Enter song title"
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="artistName">Artist Name</Label>
+          <Input
+            id="artistName"
+            value={artistName}
+            onChange={(e) => setArtistName(e.target.value)}
+            placeholder="Enter artist name"
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="description">Description</Label>
+          <Input
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter a short description"
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="coverImg">Cover Image URL</Label>
+          <Input
+            id="coverImg"
+            value={coverImg}
+            onChange={(e) => setCoverImg(e.target.value)}
+            placeholder="https://..."
+          />
+        </div>
       </div>
     </div>
   );

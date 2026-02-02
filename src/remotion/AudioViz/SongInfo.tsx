@@ -2,7 +2,7 @@ import React from 'react';
 import { AbsoluteFill, Img, useCurrentFrame, useVideoConfig, interpolate } from 'remotion';
 import { resolveSrc } from '../utils';
 import type { Caption } from '@remotion/captions';
-import { getDistToNearestCaption } from './utils/caption-utils';
+import { getDistToNearestCaption, getGapDuration } from './utils/caption-utils';
 
 export const SongInfo: React.FC<{
   coverImg?: string;
@@ -18,7 +18,13 @@ export const SongInfo: React.FC<{
   
   // Calculate distance to nearest caption
   const distMs = captions ? getDistToNearestCaption(captions, timeMs) : Infinity;
-  
+  const currentGapDuration = captions ? getGapDuration(captions, timeMs) : Infinity;
+
+  // Only show if the gap is larger than 3 seconds (3000ms)
+  // If the gap is small, we force opacity to 0 regardless of distance
+  const MIN_GAP_THRESHOLD = 3000;
+  const isLargeGap = currentGapDuration >= MIN_GAP_THRESHOLD;
+
   // Define active zone
   // If dist > 1000ms (1s), we are fully visible
   // If dist < 300ms (0.3s), we start fading out
@@ -26,10 +32,14 @@ export const SongInfo: React.FC<{
   // Let's fade out completely when text is there to avoid clutter.
   
   // Interpolate opacity based on distance
-  const opacity = interpolate(distMs, [200, 800], [0, 1], {
+  let opacity = interpolate(distMs, [200, 800], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+
+  if (!isLargeGap) {
+    opacity = 0;
+  }
   
   const scale = interpolate(distMs, [0, 800], [0.95, 1], {
     extrapolateLeft: "clamp",

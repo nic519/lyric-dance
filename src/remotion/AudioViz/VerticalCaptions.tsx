@@ -28,11 +28,14 @@ const findCaptionAt = (captions: Caption[], timeMs: number) => {
   return null;
 };
 
+import { loadFonts } from "../load-fonts";
+
 export const VerticalCaptions: React.FC<{
   srtSrc: string;
   fontFamily?: string;
   fontSize?: number;
 }> = ({ srtSrc, fontFamily, fontSize }) => {
+  loadFonts();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { delayRender, continueRender, cancelRender } = useDelayRender();

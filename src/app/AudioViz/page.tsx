@@ -26,8 +26,8 @@ const AudioVizPage: NextPage = () => {
           inputProps={inputProps}
           durationInFrames={30 * 10}
           fps={VIDEO_FPS}
-          compositionHeight={1920}
-          compositionWidth={1080}
+          compositionHeight={1920 / 2}
+          compositionWidth={1080 / 2}
           acknowledgeRemotionLicense
           style={{
             width: "100%",

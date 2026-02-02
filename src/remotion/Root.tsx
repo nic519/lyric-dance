@@ -1,5 +1,8 @@
 import { Composition, staticFile } from "remotion";
+import { loadFonts } from "./load-fonts";
 import { Main } from "./MyComp/Main";
+
+loadFonts();
 import {
   COMP_NAME,
   defaultMyCompProps,

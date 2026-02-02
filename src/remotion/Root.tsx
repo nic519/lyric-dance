@@ -50,10 +50,9 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           audioSrc: "demo/demo.mp3",
           srtSrc: "demo/demo.srt",
-          background: {
-            from: "#1a2a6c",
-            to: "#0b1020",
-          },
+          fontFamily: "Noto Sans SC",
+          fontSize: 80,
+          backgroundType: "Aurora" as const,
         }}
         calculateMetadata={async ({ props }) => {
           const durationInSeconds = await getAudioDurationInSeconds(

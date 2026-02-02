@@ -34,8 +34,8 @@ import { loadFonts } from "../load-fonts";
 
 export const VerticalCaptions: React.FC<{
   srtSrc: string;
-  fontFamily?: string;
-  fontSize?: number;
+  fontFamily: string;
+  fontSize: number;
 }> = ({ srtSrc, fontFamily, fontSize }) => {
   loadFonts();
   const frame = useCurrentFrame();
@@ -94,7 +94,7 @@ export const VerticalCaptions: React.FC<{
           height: "80%",
           justifyContent: "center",
           alignItems: "center",
-          fontFamily: fontFamily ?? "'Noto Sans SC', sans-serif",
+          fontFamily,
         }}
       >
         {lines.map((line, lIndex) => {
@@ -153,7 +153,7 @@ export const VerticalCaptions: React.FC<{
                         <span
                           key={i}
                           style={{
-                            fontSize: fontSize ?? 80,
+                            fontSize,
                             fontWeight: 900,
                             color,
                             opacity: opacity * exitOpacity,

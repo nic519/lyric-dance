@@ -12,7 +12,7 @@ export const AudioViz: React.FC<AudioVizProps> = ({
   srtSrc,
   fontFamily,
   fontSize,
-  backgroundType = "Aurora",
+  backgroundType,
 }) => {
   const renderBackground = () => {
     switch (backgroundType) {

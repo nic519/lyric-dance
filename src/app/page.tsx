@@ -34,6 +34,7 @@ const Home: NextPage = () => {
   const [srtSrc, setSrtSrc] = useState("demo/demo.srt");
   const [fontFamily, setFontFamily] = useState("'Noto Sans SC', sans-serif");
   const [fontSize, setFontSize] = useState(80);
+  const [backgroundType, setBackgroundType] = useState<"Aurora" | "NeonPulse" | "StarField" | "GradientWaves">("Aurora");
 
   const audioVizInputProps = useMemo(() => {
     return {
@@ -41,12 +42,9 @@ const Home: NextPage = () => {
       srtSrc,
       fontFamily,
       fontSize,
-      background: {
-        from: "#1a2a6c",
-        to: "#0b1020",
-      },
+      backgroundType,
     };
-  }, [audioSrc, fontFamily, fontSize, srtSrc]);
+  }, [audioSrc, fontFamily, fontSize, srtSrc, backgroundType]);
 
   const fontOptions = [
     { value: "'Noto Sans SC', sans-serif", label: "Noto Sans SC (思源黑体)" },
@@ -62,6 +60,13 @@ const Home: NextPage = () => {
     { value: "system-ui, sans-serif", label: "System UI" },
   ];
   const fontSizeOptions = [56, 64, 72, 80, 96];
+
+  const backgroundOptions = [
+    { value: "Aurora", label: "Aurora (Polar Lights)" },
+    { value: "NeonPulse", label: "Neon Pulse (Cyberpunk)" },
+    { value: "StarField", label: "Star Field (Space)" },
+    { value: "GradientWaves", label: "Gradient Waves (Flow)" },
+  ];
 
   return (
     <div className="flex h-screen w-full flex-col bg-[#050505] text-slate-200 selection:bg-cyan-500/30">
@@ -231,6 +236,25 @@ const Home: NextPage = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2 space-y-2">
+                      <Label className="text-xs font-medium text-slate-400">Background Style</Label>
+                      <Select
+                        value={backgroundType}
+                        onValueChange={(v) => setBackgroundType(v as any)}
+                      >
+                        <SelectTrigger className="border-white/10 bg-white/5 text-slate-300 hover:border-white/20 focus:ring-cyan-500/20">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="border-white/10 bg-[#111] text-slate-300">
+                          {backgroundOptions.map((b) => (
+                            <SelectItem key={b.value} value={b.value} className="focus:bg-cyan-500/10 focus:text-cyan-400">
+                              {b.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
                     <div className="space-y-2">
                       <Label className="text-xs font-medium text-slate-400">Font Family</Label>
                       <Select value={fontFamily} onValueChange={setFontFamily}>

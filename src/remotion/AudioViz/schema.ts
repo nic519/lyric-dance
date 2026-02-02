@@ -5,12 +5,7 @@ export const audioVizSchema = z.object({
   srtSrc: z.string(),
   fontFamily: z.string().optional(),
   fontSize: z.number().optional(),
-  background: z
-    .object({
-      from: z.string(),
-      to: z.string(),
-    })
-    .optional(),
+  backgroundType: z.enum(["Aurora", "NeonPulse", "StarField", "GradientWaves"]).optional(),
 });
 
 export type AudioVizProps = z.infer<typeof audioVizSchema>;

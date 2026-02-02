@@ -4,12 +4,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AbsoluteFill,
   interpolate,
+  random,
   spring,
   staticFile,
   useCurrentFrame,
   useDelayRender,
   useVideoConfig,
 } from "remotion";
+import { parseCaptionText } from "./utils/caption-utils";
 
 const findCaptionAt = (captions: Caption[], timeMs: number) => {
   let lo = 0;
@@ -110,12 +112,12 @@ export const Captions: React.FC<{
   const accentB =
     variant === 0 ? "rgba(80, 210, 255, 0.95)" : variant === 1 ? "rgba(120, 255, 180, 0.95)" : "rgba(255, 90, 190, 0.95)";
 
-  const raw = caption.text.replace(/\s+/g, " ").trim();
-  const chars = Array.from(raw);
-  const n = Math.max(1, chars.length);
+  const lines = useMemo(() => parseCaptionText(caption.text), [caption.text]);
+  const nLines = Math.max(1, lines.length);
+
   const jitter = Math.sin(frame * 0.6) * 0.7 * (1 - Math.min(1, localFrame / 10));
-  const fontSize = Math.max(54, Math.min(78, 92 - n * 1.15));
-  const lineHeight = Math.round(fontSize * 1.16);
+  const fontSize = Math.max(48, Math.min(72, 86 - nLines * 4));
+  const lineHeight = Math.round(fontSize * 1.3);
 
   return (
     <AbsoluteFill
@@ -170,35 +172,67 @@ export const Captions: React.FC<{
                   "0 10px 40px rgba(0,0,0,0.55), 0 0 24px rgba(80,210,255,0.18)",
               }}
             >
-              {chars.map((ch, i) => {
-                const a = i / n;
-                const b = (i + 1) / n;
-                const p = interpolate(progress, [a, b], [0, 1], {
-                  extrapolateLeft: "clamp",
-                  extrapolateRight: "clamp",
-                });
-
-                const y = interpolate(p, [0, 1], [10, 0], {
-                  extrapolateLeft: "clamp",
-                  extrapolateRight: "clamp",
-                });
-
-                const baseOpacity = 0.24 + p * 0.76;
-                const glow = 0.18 + p * 0.62;
+              {lines.map((line, lIndex) => {
+                const lineStart = lIndex / nLines;
+                const lineEnd = (lIndex + 1) / nLines;
 
                 return (
-                  <span
-                    key={i}
-                    style={{
-                      display: "inline-block",
-                      transform: `translateY(${y}px)`,
-                      opacity: baseOpacity,
-                      color: "rgba(255,255,255,0.88)",
-                      textShadow: `0 3px 14px rgba(0,0,0,0.65), 0 0 18px rgba(255,90,190,${glow}), 0 0 18px rgba(80,210,255,${glow})`,
-                    }}
-                  >
-                    {ch}
-                  </span>
+                  <div key={lIndex} style={{ marginBottom: lIndex < nLines - 1 ? 8 : 0 }}>
+                    {line.segments.map((segment, sIndex) => {
+                      const chars = Array.from(segment.text);
+                      const isZoom = segment.tags.some(t => t.type === 'zoom');
+                      const isShake = segment.tags.some(t => t.type === 'shake');
+                      const colorTag = segment.tags.find(t => t.type === 'color');
+                      const color = colorTag?.value || "rgba(255,255,255,0.88)";
+
+                      return (
+                        <span key={sIndex} style={{ display: "inline-block" }}>
+                          {chars.map((ch, i) => {
+                            const charProgress = i / chars.length;
+                            // Map line progress to character progress
+                            const a = lineStart + (charProgress * (lineEnd - lineStart) * 0.8);
+                            const b = a + (0.2 / nLines);
+                            
+                            const p = interpolate(progress, [a, b], [0, 1], {
+                              extrapolateLeft: "clamp",
+                              extrapolateRight: "clamp",
+                            });
+
+                            const y = interpolate(p, [0, 1], [10, 0], {
+                              extrapolateLeft: "clamp",
+                              extrapolateRight: "clamp",
+                            });
+
+                            const baseOpacity = 0.24 + p * 0.76;
+                            const glow = 0.18 + p * 0.62;
+
+                            // Shake effect
+                            const shakeX = isShake ? (random(`shake-x-${frame}-${lIndex}-${sIndex}-${i}`) - 0.5) * 6 * p : 0;
+                            const shakeY = isShake ? (random(`shake-y-${frame}-${lIndex}-${sIndex}-${i}`) - 0.5) * 6 * p : 0;
+
+                            // Zoom effect
+                            const scale = isZoom ? interpolate(p, [0, 1], [1, 1.4]) : 1;
+
+                            return (
+                              <span
+                                key={i}
+                                style={{
+                                  display: "inline-block",
+                                  transform: `translateY(${y}px) translate(${shakeX}px, ${shakeY}px) scale(${scale})`,
+                                  opacity: baseOpacity,
+                                  color,
+                                  textShadow: `0 3px 14px rgba(0,0,0,0.65), 0 0 18px rgba(255,90,190,${glow}), 0 0 18px rgba(80,210,255,${glow})`,
+                                  marginRight: ch === " " ? "0.2em" : "0.02em",
+                                }}
+                              >
+                                {ch}
+                              </span>
+                            );
+                          })}
+                        </span>
+                      );
+                    })}
+                  </div>
                 );
               })}
             </div>

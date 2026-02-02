@@ -1,15 +1,17 @@
 import { parseSrt } from "@remotion/captions";
 import type { Caption } from "@remotion/captions";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AbsoluteFill,
   interpolate,
+  random,
   spring,
   useCurrentFrame,
   useDelayRender,
   useVideoConfig,
 } from "remotion";
 import { resolveSrc } from "../utils";
+import { parseCaptionText } from "./utils/caption-utils";
 
 const findCaptionAt = (captions: Caption[], timeMs: number) => {
   let lo = 0;
@@ -64,6 +66,11 @@ export const VerticalCaptions: React.FC<{
     return findCaptionAt(captions, timeMs);
   }, [captions, frame, fps]);
 
+  const lines = useMemo(() => {
+    if (!current) return [];
+    return parseCaptionText(current.caption.text);
+  }, [current]);
+
   if (!captions) return null;
 
   if (!current) return null;
@@ -73,7 +80,7 @@ export const VerticalCaptions: React.FC<{
   const endFrame = (caption.endMs / 1000) * fps;
   const timeSinceStart = frame - startFrame;
 
-  const characters = caption.text.trim().split("");
+  const nLines = Math.max(1, lines.length);
 
   return (
     <AbsoluteFill className="items-center justify-center pointer-events-none">
@@ -82,52 +89,88 @@ export const VerticalCaptions: React.FC<{
           writingMode: "vertical-rl",
           textOrientation: "upright",
           display: "flex",
-          gap: "0.5em",
+          flexDirection: "column", // In vertical-rl, column is Right-to-Left (block direction)
+          gap: "1.2em",
           height: "80%",
           justifyContent: "center",
           alignItems: "center",
+          fontFamily: fontFamily ?? "'Noto Sans SC', sans-serif",
         }}
       >
-        {characters.map((char, i) => {
-          const delay = i * 3;
-          const charFrame = timeSinceStart - delay;
-
-          const spr = spring({
-            fps,
-            frame: charFrame,
-            config: { damping: 12, stiffness: 200 },
-            durationInFrames: 30,
-          });
-
-          const seed = index * 100 + i;
-          const floatX = Math.sin(frame * 0.05 + seed) * 10;
-          const floatY = Math.cos(frame * 0.03 + seed) * 10;
-
-          const opacity = interpolate(spr, [0, 1], [0, 1]);
-          const scale = interpolate(spr, [0, 1], [2, 1]);
-          const blur = interpolate(spr, [0, 1], [20, 0]);
-
-          const exitOpacity = interpolate(frame, [endFrame - 10, endFrame], [1, 0], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          });
+        {lines.map((line, lIndex) => {
+          const lineDelay = lIndex * 10; // Delay for each line
 
           return (
-            <span
-              key={i}
+            <div
+              key={lIndex}
               style={{
-                fontSize: fontSize ?? 80,
-                fontWeight: 900,
-                color: "white",
-                opacity: opacity * exitOpacity,
-                transform: `scale(${scale}) translate(${floatX}px, ${floatY}px)`,
-                filter: `blur(${blur}px) drop-shadow(0 0 10px rgba(255,255,255,0.5))`,
-                fontFamily: fontFamily ?? "'Noto Sans SC', sans-serif",
-                marginBottom: "0.2em",
+                display: "flex",
+                flexDirection: "row", // In vertical-rl, row is Top-to-Bottom (inline direction)
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {char}
-            </span>
+              {line.segments.map((segment, sIndex) => {
+                const chars = Array.from(segment.text);
+                const isZoom = segment.tags.some(t => t.type === 'zoom');
+                const isShake = segment.tags.some(t => t.type === 'shake');
+                const colorTag = segment.tags.find(t => t.type === 'color');
+                const color = colorTag?.value || "white";
+
+                return (
+                  <React.Fragment key={sIndex}>
+                    {chars.map((char, i) => {
+                      const charDelay = lineDelay + i * 3;
+                      const charFrame = timeSinceStart - charDelay;
+
+                      const spr = spring({
+                        fps,
+                        frame: charFrame,
+                        config: { damping: 12, stiffness: 200 },
+                        durationInFrames: 30,
+                      });
+
+                      const seed = index * 1000 + lIndex * 100 + sIndex * 10 + i;
+                      const floatX = Math.sin(frame * 0.05 + seed) * 10;
+                      const floatY = Math.cos(frame * 0.03 + seed) * 10;
+
+                      const opacity = interpolate(spr, [0, 1], [0, 1]);
+                      const baseScale = interpolate(spr, [0, 1], [2, 1]);
+                      const zoomScale = isZoom ? interpolate(spr, [0, 1], [1, 1.5]) : 1;
+                      const scale = baseScale * zoomScale;
+
+                      const blur = interpolate(spr, [0, 1], [20, 0]);
+
+                      const exitOpacity = interpolate(frame, [endFrame - 10, endFrame], [1, 0], {
+                        extrapolateLeft: "clamp",
+                        extrapolateRight: "clamp",
+                      });
+
+                      const shakeX = isShake ? (random(`v-shake-x-${frame}-${seed}`) - 0.5) * 8 * spr : 0;
+                      const shakeY = isShake ? (random(`v-shake-y-${frame}-${seed}`) - 0.5) * 8 * spr : 0;
+
+                      return (
+                        <span
+                          key={i}
+                          style={{
+                            fontSize: fontSize ?? 80,
+                            fontWeight: 900,
+                            color,
+                            opacity: opacity * exitOpacity,
+                            transform: `scale(${scale}) translate(${floatX + shakeX}px, ${floatY + shakeY}px)`,
+                            filter: `blur(${blur}px) drop-shadow(0 0 10px rgba(255,255,255,0.5))`,
+                            marginBottom: "0.15em",
+                            display: "inline-block",
+                          }}
+                        >
+                          {char}
+                        </span>
+                      );
+                    })}
+                  </React.Fragment>
+                );
+              })}
+            </div>
           );
         })}
       </div>

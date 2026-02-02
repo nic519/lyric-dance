@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Tabs, TabsContent } from "../components/ui/tabs";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { AudioViz } from "../remotion/AudioViz/AudioViz";
@@ -67,12 +67,31 @@ const Home: NextPage = () => {
     <div className="flex h-screen w-full flex-col bg-[#050505] text-slate-200 selection:bg-cyan-500/30">
       {/* Header */}
       <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-[#0A0A0A] px-6">
-        <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
-          <span className="font-mono text-sm font-bold tracking-wider text-slate-100">
-            REMOTION<span className="text-white/40">STUDIO</span>
-          </span>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+            <span className="font-mono text-sm font-bold tracking-wider text-slate-100">
+              REMOTION<span className="text-white/40">STUDIO</span>
+            </span>
+          </div>
+
+          <div className="h-6 w-px bg-white/10" />
+
+          <Select value={activeProjectId} onValueChange={setActiveProjectId}>
+            <SelectTrigger className="h-8 w-[200px] border-white/10 bg-white/5 text-xs font-medium text-slate-300 hover:bg-white/10 focus:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="border-white/10 bg-[#111] text-slate-300">
+              <SelectItem value="AudioViz" className="text-xs focus:bg-cyan-500/10 focus:text-cyan-400">
+                AudioViz Project
+              </SelectItem>
+              <SelectItem value="MyComp" className="text-xs focus:bg-cyan-500/10 focus:text-cyan-400">
+                MyComp Project
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+
         <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
@@ -151,26 +170,6 @@ const Home: NextPage = () => {
         <div className="w-[400px] shrink-0 overflow-y-auto border-l border-white/10 bg-[#0A0A0A]">
           <div className="p-6">
             <Tabs value={activeProjectId} onValueChange={setActiveProjectId} className="w-full">
-              <div className="mb-8">
-                <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                  Project
-                </div>
-                <TabsList className="h-10 w-full rounded-lg border border-white/10 bg-white/5 p-1">
-                  <TabsTrigger
-                    value="AudioViz"
-                    className="flex-1 rounded-md text-xs data-[state=active]:bg-cyan-500/10 data-[state=active]:text-cyan-400 data-[state=active]:shadow-none hover:text-slate-300"
-                  >
-                    AudioViz
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="MyComp"
-                    className="flex-1 rounded-md text-xs data-[state=active]:bg-cyan-500/10 data-[state=active]:text-cyan-400 data-[state=active]:shadow-none hover:text-slate-300"
-                  >
-                    MyComp
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
               <TabsContent value="AudioViz" className="mt-0 space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                 {/* Configuration Group */}
                 <div>

@@ -1,3 +1,5 @@
+import type { Caption } from "@remotion/captions";
+
 export type TagType = 'zoom' | 'shake' | 'color';
 
 export interface Tag {
@@ -79,3 +81,59 @@ export function parseCaptionText(text: string): CaptionLine[] {
     return { segments };
   });
 }
+
+export const findCaptionAt = (captions: Caption[], timeMs: number) => {
+  let lo = 0;
+  let hi = captions.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const c = captions[mid];
+    if (timeMs < c.startMs) {
+      hi = mid - 1;
+    } else if (timeMs >= c.endMs) {
+      lo = mid + 1;
+    } else {
+      return { caption: c, index: mid };
+    }
+  }
+  return null;
+};
+
+export const getDistToNearestCaption = (captions: Caption[], timeMs: number): number => {
+  // If inside a caption, distance is 0.
+  // If outside, min(timeMs - prev.endMs, next.startMs - timeMs)
+  
+  // Find insertion point
+  let lo = 0;
+  let hi = captions.length - 1;
+  let idx = captions.length; // Default to end (meaning after last caption)
+  
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const c = captions[mid];
+    if (c.startMs <= timeMs && c.endMs > timeMs) {
+      return 0; // Inside caption
+    }
+    if (timeMs < c.startMs) {
+      idx = mid;
+      hi = mid - 1;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  
+  // idx is the first caption that starts AFTER timeMs
+  // idx-1 is the caption that ended BEFORE timeMs
+  
+  let dist = Infinity;
+  
+  if (idx < captions.length) {
+    dist = Math.min(dist, captions[idx].startMs - timeMs);
+  }
+  
+  if (idx > 0) {
+    dist = Math.min(dist, timeMs - captions[idx - 1].endMs);
+  }
+  
+  return dist;
+};

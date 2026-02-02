@@ -1,64 +1,25 @@
-import { parseSrt } from "@remotion/captions";
 import type { Caption } from "@remotion/captions";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   AbsoluteFill,
   interpolate,
   random,
   spring,
   useCurrentFrame,
-  useDelayRender,
   useVideoConfig,
 } from "remotion";
-import { resolveSrc } from "../utils";
-import { parseCaptionText } from "./utils/caption-utils";
-
-const findCaptionAt = (captions: Caption[], timeMs: number) => {
-  let lo = 0;
-  let hi = captions.length - 1;
-  while (lo <= hi) {
-    const mid = (lo + hi) >> 1;
-    const c = captions[mid];
-    if (timeMs < c.startMs) {
-      hi = mid - 1;
-    } else if (timeMs >= c.endMs) {
-      lo = mid + 1;
-    } else {
-      return { caption: c, index: mid };
-    }
-  }
-  return null;
-};
+import { parseCaptionText, findCaptionAt } from "./utils/caption-utils";
 
 import { loadFonts } from "../load-fonts";
 
 export const VerticalCaptions: React.FC<{
-  srtSrc: string;
+  captions: Caption[] | null;
   fontFamily: string;
   fontSize: number;
-}> = ({ srtSrc, fontFamily, fontSize }) => {
+}> = ({ captions, fontFamily, fontSize }) => {
   loadFonts();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const { delayRender, continueRender, cancelRender } = useDelayRender();
-  const [handle] = useState(() => delayRender());
-  const [captions, setCaptions] = useState<Caption[] | null>(null);
-
-  const fetchCaptions = useCallback(async () => {
-    try {
-      const response = await fetch(resolveSrc(srtSrc));
-      const text = await response.text();
-      const parsed = parseSrt({ input: text });
-      setCaptions(parsed.captions);
-      continueRender(handle);
-    } catch (e) {
-      cancelRender(e);
-    }
-  }, [cancelRender, continueRender, handle, srtSrc]);
-
-  useEffect(() => {
-    fetchCaptions();
-  }, [fetchCaptions]);
 
   const current = useMemo(() => {
     if (!captions) return null;
@@ -79,8 +40,6 @@ export const VerticalCaptions: React.FC<{
   const startFrame = (caption.startMs / 1000) * fps;
   const endFrame = (caption.endMs / 1000) * fps;
   const timeSinceStart = frame - startFrame;
-
-  const nLines = Math.max(1, lines.length);
 
   return (
     <AbsoluteFill className="items-center justify-center pointer-events-none">

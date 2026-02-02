@@ -53,6 +53,10 @@ export const RemotionRoot: React.FC = () => {
           fontFamily: "Noto Sans SC",
           fontSize: 80,
           backgroundType: "Aurora" as const,
+          coverImg: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop",
+          songTitle: "Midnight Dreams",
+          artistName: "Cosmic Voyager",
+          description: "A journey through the stars and beyond.",
         }}
         calculateMetadata={async ({ props }) => {
           const durationInSeconds = await getAudioDurationInSeconds(

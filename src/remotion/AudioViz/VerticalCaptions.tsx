@@ -86,7 +86,7 @@ export const VerticalCaptions: React.FC<{
           writingMode: "vertical-rl",
           textOrientation: "upright",
           display: "flex",
-          flexDirection: "row-reverse", // RL writing mode
+          flexDirection: "column",
           gap: "1.2em",
           height: "80%",
           justifyContent: "center",
@@ -101,7 +101,7 @@ export const VerticalCaptions: React.FC<{
               key={lIndex}
               style={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
               }}

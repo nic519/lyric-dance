@@ -128,8 +128,8 @@ function drawE0(
 
     p.size += (p.targetSize - p.size) * 0.05;
 
-    const targetOpacity = (v / 255) * 0.6 + 0.1;
-    p.opacity += (targetOpacity - p.opacity) * 0.05;
+    const targetOpacity = (v / 255) * 0.8 + 0.2; // Brighter target opacity
+    p.opacity += (targetOpacity - p.opacity) * 0.1; // Faster fade in
 
     p.x += p.vx;
     p.y += p.vy;
@@ -145,13 +145,13 @@ function drawE0(
     const base = clampInt(Math.round(orbSize), 0, 200);
     const softness = clampInt(Math.round(blurStrength), 0, 200);
 
-    const baseRadius = Math.max(6, base + p.size * 0.08);
-    const outerRadius = baseRadius + 4 + softness * 0.45;
+    const baseRadius = Math.max(8, base + p.size * 0.1); // Slightly larger base
+    const outerRadius = baseRadius + 6 + softness * 0.5; // Larger outer glow
 
     const outerGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, outerRadius);
-    outerGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.12})`);
-    outerGradient.addColorStop(0.25, `rgba(${rgb}, ${alpha * 0.08})`);
-    outerGradient.addColorStop(0.6, `rgba(${rgb}, ${alpha * 0.03})`);
+    outerGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.3})`); // Brighter glow
+    outerGradient.addColorStop(0.25, `rgba(${rgb}, ${alpha * 0.2})`);
+    outerGradient.addColorStop(0.6, `rgba(${rgb}, ${alpha * 0.1})`);
     outerGradient.addColorStop(1, `rgba(${rgb}, 0)`);
 
     ctx.globalCompositeOperation = 'screen';
@@ -161,11 +161,11 @@ function drawE0(
     ctx.closePath();
     ctx.fill();
 
-    const coreRadius = Math.max(4, baseRadius * 0.6);
+    const coreRadius = Math.max(5, baseRadius * 0.7);
     const coreGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, coreRadius);
-    coreGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.42})`);
-    coreGradient.addColorStop(0.7, `rgba(${rgb}, ${alpha * 0.18})`);
-    coreGradient.addColorStop(1, `rgba(${rgb}, ${alpha * 0.03})`);
+    coreGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.8})`); // Brighter core
+    coreGradient.addColorStop(0.7, `rgba(${rgb}, ${alpha * 0.4})`);
+    coreGradient.addColorStop(1, `rgba(${rgb}, ${alpha * 0.1})`);
 
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = coreGradient;

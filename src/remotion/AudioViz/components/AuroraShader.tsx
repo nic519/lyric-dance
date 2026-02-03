@@ -11,10 +11,10 @@ export const AuroraShader: React.FC<{
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const audioData = useAudioData(resolveSrc(audioSrc));
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvasEl, setCanvasEl] = React.useState<HTMLCanvasElement | null>(null);
   
   const { render } = useAuroraOGL(
-    canvasRef.current,
+    canvasEl,
     width,
     height,
     {
@@ -26,15 +26,15 @@ export const AuroraShader: React.FC<{
   );
 
   useEffect(() => {
-    if (audioData) {
+    if (audioData && canvasEl) {
       render(frame / fps, getAudioData(frame, fps, audioData));
     }
-  }, [frame, fps, audioData, render]);
+  }, [frame, fps, audioData, render, canvasEl]);
 
   return (
     <AbsoluteFill>
       <canvas
-        ref={canvasRef}
+        ref={setCanvasEl}
         width={width}
         height={height}
         style={{ width: "100%", height: "100%" }}

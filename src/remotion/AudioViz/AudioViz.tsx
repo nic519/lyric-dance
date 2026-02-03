@@ -4,6 +4,10 @@ import { Atmosphere } from "./Atmosphere";
 import { NeonPulse } from "./NeonPulse";
 import { StarField } from "./StarField";
 import { GradientWaves } from "./GradientWaves";
+import { CircularAudioShader } from "./components/CircularAudioShader";
+import { DarkVeilShader } from "./components/DarkVeilShader";
+import { AuroraShader } from "./components/AuroraShader";
+import { VisualMusicShader } from "./components/VisualMusicShader";
 import { VerticalCaptions } from "./VerticalCaptions";
 import { resolveSrc } from "../utils";
 import React, { useEffect, useState } from "react";
@@ -49,6 +53,14 @@ export const AudioViz: React.FC<AudioVizProps> = ({
         return <StarField audioSrc={audioSrc} />;
       case "GradientWaves":
         return <GradientWaves audioSrc={audioSrc} />;
+      case "CircularAudio":
+        return <CircularAudioShader audioSrc={audioSrc} />;
+      case "DarkVeil":
+        return <DarkVeilShader audioSrc={audioSrc} />;
+      case "AuroraShader":
+        return <AuroraShader audioSrc={audioSrc} />;
+      case "VisualMusic":
+        return <VisualMusicShader audioSrc={audioSrc} />;
       case "Aurora":
       default:
         return <Atmosphere audioSrc={audioSrc} />;

@@ -5,7 +5,7 @@ export const audioVizSchema = z.object({
   srtSrc: z.string(),
   fontFamily: z.string(),
   fontSize: z.number(),
-  backgroundType: z.enum(["Aurora", "NeonPulse", "StarField", "GradientWaves"]),
+  backgroundType: z.enum(["Aurora", "NeonPulse", "StarField", "GradientWaves", "CircularAudio", "DarkVeil", "AuroraShader", "VisualMusic"]),
   coverImg: z.string().optional(),
   songTitle: z.string().optional(),
   artistName: z.string().optional(),

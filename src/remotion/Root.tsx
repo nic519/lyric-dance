@@ -13,7 +13,7 @@ import {
 } from "../../types/constants";
 import { NextLogo } from "./MyComp/NextLogo";
 import { AudioViz } from "./AudioViz/AudioViz";
-import { audioVizSchema } from "./AudioViz/schema";
+import { audioVizSchema, defaultAudioVizProps } from "./AudioViz/schema";
 import { getAudioDurationInSeconds } from "@remotion/media-utils";
 
 export const RemotionRoot: React.FC = () => {
@@ -47,17 +47,7 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         schema={audioVizSchema}
-        defaultProps={{
-          audioSrc: "demo/demo.mp3",
-          srtSrc: "demo/demo.srt",
-          fontFamily: "Noto Sans SC",
-          fontSize: 80,
-          backgroundType: "Aurora" as const,
-          coverImg: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop",
-          songTitle: "Midnight Dreams",
-          artistName: "Cosmic Voyager",
-          description: "A journey through the stars and beyond.",
-        }}
+        defaultProps={defaultAudioVizProps}
         calculateMetadata={async ({ props }) => {
           const durationInSeconds = await getAudioDurationInSeconds(
             staticFile(props.audioSrc),

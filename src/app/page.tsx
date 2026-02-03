@@ -22,7 +22,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { AudioViz } from "../remotion/AudioViz/AudioViz";
 import { Main } from "../remotion/MyComp/Main";
-import { AudioVizProps } from "../remotion/AudioViz/schema";
+import { AudioVizProps, defaultAudioVizProps } from "../remotion/AudioViz/schema";
 
 import { loadFonts } from "../remotion/load-fonts";
 
@@ -33,11 +33,17 @@ type BackgroundType = AudioVizProps["backgroundType"];
 const Home: NextPage = () => {
   const [activeProjectId, setActiveProjectId] = useState("AudioViz");
 
-  const [audioSrc, setAudioSrc] = useState("demo/demo.mp3");
-  const [srtSrc, setSrtSrc] = useState("demo/demo.srt");
-  const [fontFamily, setFontFamily] = useState("'Noto Sans SC', sans-serif");
-  const [fontSize, setFontSize] = useState(80);
-  const [backgroundType, setBackgroundType] = useState<BackgroundType>("Aurora");
+  const [audioSrc, setAudioSrc] = useState(defaultAudioVizProps.audioSrc);
+  const [srtSrc, setSrtSrc] = useState(defaultAudioVizProps.srtSrc);
+  const [fontFamily, setFontFamily] = useState(defaultAudioVizProps.fontFamily);
+  const [fontSize, setFontSize] = useState(defaultAudioVizProps.fontSize);
+  const [backgroundType, setBackgroundType] = useState<BackgroundType>(defaultAudioVizProps.backgroundType);
+
+  // Song Metadata State
+  const [coverImg, setCoverImg] = useState(defaultAudioVizProps.coverImg ?? "");
+  const [songTitle, setSongTitle] = useState(defaultAudioVizProps.songTitle ?? "");
+  const [artistName, setArtistName] = useState(defaultAudioVizProps.artistName ?? "");
+  const [description, setDescription] = useState(defaultAudioVizProps.description ?? "");
 
   const audioVizInputProps = useMemo(() => {
     return {
@@ -46,8 +52,12 @@ const Home: NextPage = () => {
       fontFamily,
       fontSize,
       backgroundType,
+      coverImg,
+      songTitle,
+      artistName,
+      description,
     };
-  }, [audioSrc, fontFamily, fontSize, srtSrc, backgroundType]);
+  }, [audioSrc, fontFamily, fontSize, srtSrc, backgroundType, coverImg, songTitle, artistName, description]);
 
   const fontOptions = [
     { value: "'Noto Sans SC', sans-serif", label: "Noto Sans SC (思源黑体)" },
@@ -224,6 +234,59 @@ const Home: NextPage = () => {
                       <div className="text-[10px] text-slate-600 truncate px-1">
                         Current: {srtSrc.startsWith("blob:") ? "Uploaded File" : srtSrc}
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Song Metadata Group */}
+                <div>
+                  <div className="mb-4 flex items-center gap-2">
+                    <div className="h-px flex-1 bg-white/10" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      Song Metadata
+                    </span>
+                    <div className="h-px flex-1 bg-white/10" />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-medium text-slate-400">Cover Image URL</Label>
+                      <Input
+                        type="text"
+                        value={coverImg}
+                        onChange={(e) => setCoverImg(e.target.value)}
+                        placeholder="https://..."
+                        className="h-9 border-white/10 bg-white/5 text-xs text-slate-300 placeholder:text-slate-600 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-xs font-medium text-slate-400">Song Title</Label>
+                        <Input
+                          type="text"
+                          value={songTitle}
+                          onChange={(e) => setSongTitle(e.target.value)}
+                          className="h-9 border-white/10 bg-white/5 text-xs text-slate-300 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-medium text-slate-400">Artist Name</Label>
+                        <Input
+                          type="text"
+                          value={artistName}
+                          onChange={(e) => setArtistName(e.target.value)}
+                          className="h-9 border-white/10 bg-white/5 text-xs text-slate-300 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs font-medium text-slate-400">Description</Label>
+                      <Input
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="h-9 border-white/10 bg-white/5 text-xs text-slate-300 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50"
+                      />
                     </div>
                   </div>
                 </div>

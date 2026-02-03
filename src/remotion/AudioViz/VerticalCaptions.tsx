@@ -66,17 +66,18 @@ export const VerticalCaptions: React.FC<{
     return findCaptionAt(captions, timeMs);
   }, [captions, frame, fps]);
 
-  if (!captions) return null;
+  const lines = useMemo(() => {
+    if (!current) return [];
+    return parseCaptionText(current.caption.text);
+  }, [current]);
 
+  if (!captions) return null;
   if (!current) return null;
 
   const { caption, index } = current;
   const startFrame = (caption.startMs / 1000) * fps;
   const endFrame = (caption.endMs / 1000) * fps;
   const timeSinceStart = frame - startFrame;
-
-  const lines = useMemo(() => parseCaptionText(caption.text), [caption.text]);
-  const nLines = Math.max(1, lines.length);
 
   return (
     <AbsoluteFill className="items-center justify-center pointer-events-none">

@@ -1,3 +1,5 @@
+import type { Caption } from '@remotion/captions';
+
 export type TagType = 'zoom' | 'shake' | 'color';
 
 export interface Tag {
@@ -22,10 +24,10 @@ export interface CaptionLine {
 export function parseCaptionText(text: string): CaptionLine[] {
   // 1. Split by spaces to handle "new line for each word" requirement
   const words = text.trim().split(/\s+/);
-  
+
   return words.map(word => {
     const segments: CaptionSegment[] = [];
-    
+
     // Recursive function to parse tags
     const parseTags = (input: string, activeTags: Tag[] = []) => {
       const tagRegex = /\[(zoom|shake|color)=?([^\]]*)\](.*?)\[\/\1\]/g;
@@ -46,10 +48,10 @@ export function parseCaptionText(text: string): CaptionLine[] {
         const type = match[1] as TagType;
         const value = match[2] || undefined;
         const content = match[3];
-        
+
         // Recurse into content with the new tag added
         parseTags(content, [...activeTags, { type, value }]);
-        
+
         lastIndex = tagRegex.lastIndex;
       }
 
@@ -79,3 +81,62 @@ export function parseCaptionText(text: string): CaptionLine[] {
     return { segments };
   });
 }
+
+/**
+ * Calculates the distance to the nearest caption in milliseconds.
+ * Returns 0 if currently inside a caption.
+ */
+export function getDistToNearestCaption(captions: Caption[], timeMs: number): number {
+  if (captions.length === 0) return Infinity;
+
+  let minDist = Infinity;
+
+  for (const caption of captions) {
+    if (timeMs >= caption.startMs && timeMs <= caption.endMs) {
+      return 0;
+    }
+
+    const distToStart = Math.abs(caption.startMs - timeMs);
+    const distToEnd = Math.abs(caption.endMs - timeMs);
+    minDist = Math.min(minDist, distToStart, distToEnd);
+  }
+
+  return minDist;
+}
+
+/**
+ * Calculates the duration of the current gap (silence) the time falls into.
+ * If the time is inside a caption, returns 0.
+ */
+export function getGapDuration(captions: Caption[], timeMs: number): number {
+  if (captions.length === 0) return Infinity;
+
+  // Check if inside any caption
+  for (const caption of captions) {
+    if (timeMs >= caption.startMs && timeMs <= caption.endMs) {
+      return 0;
+    }
+  }
+
+  // Find the gap
+  // Before first caption
+  if (timeMs < captions[0].startMs) {
+    return captions[0].startMs;
+  }
+
+  // Between captions
+  for (let i = 0; i < captions.length - 1; i++) {
+    if (timeMs > captions[i].endMs && timeMs < captions[i + 1].startMs) {
+      return captions[i + 1].startMs - captions[i].endMs;
+    }
+  }
+
+  // After last caption
+  if (timeMs > captions[captions.length - 1].endMs) {
+    // We don't know the end of the video here, return a large number
+    return Infinity;
+  }
+
+  return 0;
+}
+

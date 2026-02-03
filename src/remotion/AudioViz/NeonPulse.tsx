@@ -7,7 +7,7 @@ export const NeonPulse: React.FC<{
   audioSrc: string;
 }> = ({ audioSrc }) => {
   const frame = useCurrentFrame();
-  const { fps, width, height } = useVideoConfig();
+  const { fps } = useVideoConfig();
   const audioData = useAudioData(resolveSrc(audioSrc));
 
   if (!audioData) {

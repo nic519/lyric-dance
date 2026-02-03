@@ -1,6 +1,6 @@
 import { useAudioData, visualizeAudio } from "@remotion/media-utils";
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { resolveSrc } from "../utils";
 
 export const GradientWaves: React.FC<{
@@ -28,7 +28,6 @@ export const GradientWaves: React.FC<{
   return (
     <AbsoluteFill className="bg-[#0f172a] overflow-hidden">
       {new Array(3).fill(0).map((_, i) => {
-        const offset = i * 2;
         // Significantly reduced audio influence on scale
         const scale = 1 + low * 0.15;
         // Slower, smoother rotation

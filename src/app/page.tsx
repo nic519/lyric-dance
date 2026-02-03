@@ -22,10 +22,13 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { AudioViz } from "../remotion/AudioViz/AudioViz";
 import { Main } from "../remotion/MyComp/Main";
+import { AudioVizProps } from "../remotion/AudioViz/schema";
 
 import { loadFonts } from "../remotion/load-fonts";
 
 loadFonts();
+
+type BackgroundType = AudioVizProps["backgroundType"];
 
 const Home: NextPage = () => {
   const [activeProjectId, setActiveProjectId] = useState("AudioViz");
@@ -34,7 +37,7 @@ const Home: NextPage = () => {
   const [srtSrc, setSrtSrc] = useState("demo/demo.srt");
   const [fontFamily, setFontFamily] = useState("'Noto Sans SC', sans-serif");
   const [fontSize, setFontSize] = useState(80);
-  const [backgroundType, setBackgroundType] = useState<"Aurora" | "NeonPulse" | "StarField" | "GradientWaves">("Aurora");
+  const [backgroundType, setBackgroundType] = useState<BackgroundType>("Aurora");
 
   const audioVizInputProps = useMemo(() => {
     return {
@@ -240,7 +243,7 @@ const Home: NextPage = () => {
                       <Label className="text-xs font-medium text-slate-400">Background Style</Label>
                       <Select
                         value={backgroundType}
-                        onValueChange={(v) => setBackgroundType(v as any)}
+                        onValueChange={(v) => setBackgroundType(v as BackgroundType)}
                       >
                         <SelectTrigger className="border-white/10 bg-white/5 text-slate-300 hover:border-white/20 focus:ring-cyan-500/20">
                           <SelectValue />

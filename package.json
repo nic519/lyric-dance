@@ -59,7 +59,6 @@
     "start": "next start",
     "lint": "eslint .",
     "remotion": "remotion studio",
-    "render": "remotion render",
-    "deploy": "node deploy.mjs"
+    "render": "remotion render"
   }
 }

@@ -3,6 +3,27 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { AudioData, VisualMusicTweakOptions } from '../types/audio';
 
+// 核心配置变量 (Core Configuration Variables)
+const DEFAULT_INTENSITY = 1;
+const DEFAULT_TRAIL = 0.2;
+const DEFAULT_PARTICLE_COUNT = 25;
+const DEFAULT_BLUR_STRENGTH = 8;
+const DEFAULT_ORB_SIZE = 22;
+
+const E0_COLORS = [
+  '105, 210, 231',
+  '27, 103, 107',
+  '160, 212, 104', // Softer Green
+  '255, 206, 84',  // Sunflower
+  '0, 205, 172',
+  '22, 147, 165',
+  '255, 180, 50',  // Softer Orange-Yellow
+  '255, 107, 107', // Softer Red
+  '231, 60, 100',  // Softer Pink
+  '12, 202, 186',
+  '236, 135, 192', // Lavender/Pink
+] as const;
+
 type E0Particle = {
   x: number;
   y: number;
@@ -24,32 +45,21 @@ type VisualMusicState = {
   e0?: E0State;
 };
 
-const e0Colors = [
-  '105, 210, 231',
-  '27, 103, 107',
-  '160, 212, 104', // Softer Green
-  '255, 206, 84',  // Sunflower
-  '0, 205, 172',
-  '22, 147, 165',
-  '255, 180, 50',  // Softer Orange-Yellow
-  '255, 107, 107', // Softer Red
-  '231, 60, 100',  // Softer Pink
-  '12, 202, 186',
-  '236, 135, 192', // Lavender/Pink
-] as const;
-
+// 工具函数：限制值在 0-1 之间 (Utility: Clamp value between 0-1)
 function clamp01(value: number): number {
   if (value < 0) return 0;
   if (value > 1) return 1;
   return value;
 }
 
+// 工具函数：限制值在 min-max 之间 (Utility: Clamp value between min-max)
 function clampInt(value: number, min: number, max: number): number {
   if (value < min) return min;
   if (value > max) return max;
   return value;
 }
 
+// 获取重采样后的频率数据 (Get Resampled Frequency Data)
 function getResampledFrequencyData(source: Uint8Array | null, targetLength: number, intensity: number): Uint8Array {
   const result = new Uint8Array(targetLength);
   if (!source || source.length === 0) return result;
@@ -63,6 +73,7 @@ function getResampledFrequencyData(source: Uint8Array | null, targetLength: numb
   return result;
 }
 
+// 开始新的一帧 (Begin Frame)
 function beginFrame(ctx: CanvasRenderingContext2D, width: number, height: number, trail: number) {
   const t = clamp01(trail);
   ctx.globalCompositeOperation = 'source-over';
@@ -76,25 +87,27 @@ function beginFrame(ctx: CanvasRenderingContext2D, width: number, height: number
   ctx.fillRect(0, 0, width, height);
 }
 
+// 初始化粒子状态 (Initialize Particle State)
 function initE0(width: number, height: number, particleCount: number): E0State {
   const particles: E0Particle[] = [];
-  const colorNum = e0Colors.length;
+  const colorNum = E0_COLORS.length;
 
   for (let i = 0; i < particleCount; i++) {
     particles[i] = {
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.5, // Slow horizontal drift
-      vy: (Math.random() - 0.5) * 0.5, // Slow vertical drift
-      color: `rgba(${e0Colors[Math.floor(Math.random() * colorNum)]}, 0)`,
+      vx: (Math.random() - 0.5) * 0.5, // 缓慢水平漂移 (Slow horizontal drift)
+      vy: (Math.random() - 0.5) * 0.5, // 缓慢垂直漂移 (Slow vertical drift)
+      color: `rgba(${E0_COLORS[Math.floor(Math.random() * colorNum)]}, 0)`,
       size: 0,
       targetSize: 0,
-      opacity: Math.random() * 0.5 + 0.1, // Lower initial opacity
+      opacity: Math.random() * 0.5 + 0.1, // 较低的初始不透明度 (Lower initial opacity)
     };
   }
   return { particles };
 }
 
+// 绘制粒子 (Draw Particles)
 function drawE0(
   ctx: CanvasRenderingContext2D,
   width: number,
@@ -128,8 +141,8 @@ function drawE0(
 
     p.size += (p.targetSize - p.size) * 0.05;
 
-    const targetOpacity = (v / 255) * 0.8 + 0.2; // Brighter target opacity
-    p.opacity += (targetOpacity - p.opacity) * 0.1; // Faster fade in
+    const targetOpacity = (v / 255) * 0.8 + 0.2; // 目标不透明度更亮 (Brighter target opacity)
+    p.opacity += (targetOpacity - p.opacity) * 0.1; // 淡入更快 (Faster fade in)
 
     p.x += p.vx;
     p.y += p.vy;
@@ -145,11 +158,11 @@ function drawE0(
     const base = clampInt(Math.round(orbSize), 0, 200);
     const softness = clampInt(Math.round(blurStrength), 0, 200);
 
-    const baseRadius = Math.max(8, base + p.size * 0.1); // Slightly larger base
-    const outerRadius = baseRadius + 6 + softness * 0.5; // Larger outer glow
+    const baseRadius = Math.max(8, base + p.size * 0.1); // 稍大的基础半径 (Slightly larger base)
+    const outerRadius = baseRadius + 6 + softness * 0.5; // 更大的外部光晕 (Larger outer glow)
 
     const outerGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, outerRadius);
-    outerGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.3})`); // Brighter glow
+    outerGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.3})`); // 光晕更亮 (Brighter glow)
     outerGradient.addColorStop(0.25, `rgba(${rgb}, ${alpha * 0.2})`);
     outerGradient.addColorStop(0.6, `rgba(${rgb}, ${alpha * 0.1})`);
     outerGradient.addColorStop(1, `rgba(${rgb}, 0)`);
@@ -163,7 +176,7 @@ function drawE0(
 
     const coreRadius = Math.max(5, baseRadius * 0.7);
     const coreGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, coreRadius);
-    coreGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.8})`); // Brighter core
+    coreGradient.addColorStop(0, `rgba(${rgb}, ${alpha * 0.8})`); // 核心更亮 (Brighter core)
     coreGradient.addColorStop(0.7, `rgba(${rgb}, ${alpha * 0.4})`);
     coreGradient.addColorStop(1, `rgba(${rgb}, ${alpha * 0.1})`);
 
@@ -189,20 +202,20 @@ export function useVisualMusic2D(
   options?: Partial<VisualMusicTweakOptions>
 ) {
   const optionsRef = useRef<VisualMusicTweakOptions>({
-    intensity: 1,
-    trail: 0.2,
-    particleCount: 25,
-    blurStrength: 8,
-    orbSize: 22,
+    intensity: DEFAULT_INTENSITY,
+    trail: DEFAULT_TRAIL,
+    particleCount: DEFAULT_PARTICLE_COUNT,
+    blurStrength: DEFAULT_BLUR_STRENGTH,
+    orbSize: DEFAULT_ORB_SIZE,
   });
 
   const mergedOptions = useMemo<VisualMusicTweakOptions>(() => {
     return {
-      intensity: typeof options?.intensity === 'number' ? options.intensity : 1,
-      trail: typeof options?.trail === 'number' ? options.trail : 0.2,
-      particleCount: typeof options?.particleCount === 'number' ? options.particleCount : 25,
-      blurStrength: typeof options?.blurStrength === 'number' ? options.blurStrength : 8,
-      orbSize: typeof options?.orbSize === 'number' ? options.orbSize : 22,
+      intensity: typeof options?.intensity === 'number' ? options.intensity : DEFAULT_INTENSITY,
+      trail: typeof options?.trail === 'number' ? options.trail : DEFAULT_TRAIL,
+      particleCount: typeof options?.particleCount === 'number' ? options.particleCount : DEFAULT_PARTICLE_COUNT,
+      blurStrength: typeof options?.blurStrength === 'number' ? options.blurStrength : DEFAULT_BLUR_STRENGTH,
+      orbSize: typeof options?.orbSize === 'number' ? options.orbSize : DEFAULT_ORB_SIZE,
     };
   }, [options?.intensity, options?.trail, options?.particleCount, options?.blurStrength, options?.orbSize]);
 

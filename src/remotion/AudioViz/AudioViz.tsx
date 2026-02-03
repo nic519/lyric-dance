@@ -69,7 +69,7 @@ export const AudioViz: React.FC<AudioVizProps> = ({
       />
 
       <VerticalCaptions
-        captions={captions}
+        srtSrc={srtSrc}
         fontFamily={fontFamily}
         fontSize={fontSize}
       />

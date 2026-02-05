@@ -119,7 +119,7 @@ export const SongInfo: React.FC<{
 
             {songTitle && (
               <h1
-                className="text-7xl text-white drop-shadow-xl tracking-wide leading-tight"
+                className="text-9xl text-white drop-shadow-xl tracking-wide leading-tight"
                 style={{
                   opacity: centerTitleOpacity,
                   filter: 'url(#noise-text-filter)',
@@ -130,12 +130,12 @@ export const SongInfo: React.FC<{
             )}
             <div style={{ opacity: centerInfoOpacity }} className="flex flex-col items-center gap-2">
               {artistName && (
-                <h2 className="text-4xl text-white/90 tracking-widest opacity-90">
+                <h2 className="text-5xl text-white/90 tracking-widest opacity-90">
                   {artistName}
                 </h2>
               )}
               {description && (
-                <p className="text-2xl text-white/70 max-w-2xl mt-4 leading-relaxed font-sans opacity-80">
+                <p className="text-5xl text-white/70 max-w-2xl mt-4 leading-relaxed  opacity-80">
                   {description}
                 </p>
               )}

@@ -194,9 +194,34 @@ function initE0(width: number, height: number, particleCount: number, customColo
     // 转换 Hex 到 RGB 字符串
     const colorRgb = hexToRgb(colorHex);
 
+    // 尝试找到一个不重叠的位置
+    let x = 0, y = 0;
+    let attempts = 0;
+    const minDistance = Math.min(width, height) / (particleCount + 1); // 动态计算最小间距
+    const safeDistance = Math.max(minDistance, 150); // 至少 150px
+
+    while (attempts < 50) {
+      x = Math.random() * width;
+      y = Math.random() * height;
+
+      let overlaps = false;
+      for (let j = 0; j < i; j++) {
+        const other = particles[j];
+        const dx = x - other.x;
+        const dy = y - other.y;
+        if (Math.sqrt(dx * dx + dy * dy) < safeDistance) {
+          overlaps = true;
+          break;
+        }
+      }
+
+      if (!overlaps) break;
+      attempts++;
+    }
+
     particles[i] = {
-      x: Math.random() * width,
-      y: Math.random() * height,
+      x,
+      y,
       vx: (Math.random() - 0.5) * 0.5, // 缓慢水平漂移速度
       vy: (Math.random() - 0.5) * 0.5, // 缓慢垂直漂移速度
       color: `rgba(${colorRgb}, 0)`,
@@ -280,11 +305,17 @@ function drawE0(
       const dy = p.y - other.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < repulsionRadius && dist > 0) {
+      if (dist < repulsionRadius) {
         // 距离越近，斥力越大
-        const force = (repulsionRadius - dist) / repulsionRadius;
-        p.vx += (dx / dist) * force * repulsionStrength;
-        p.vy += (dy / dist) * force * repulsionStrength;
+        // 如果距离极小（重叠），给予一个随机方向的强力推斥
+        if (dist < 0.1) {
+          p.vx += (Math.random() - 0.5) * 2;
+          p.vy += (Math.random() - 0.5) * 2;
+        } else {
+          const force = (repulsionRadius - dist) / repulsionRadius;
+          p.vx += (dx / dist) * force * repulsionStrength;
+          p.vy += (dy / dist) * force * repulsionStrength;
+        }
       }
     }
 
@@ -422,7 +453,7 @@ export function useVisualMusic2D(
       beginFrame(ctx, width, height, trail);
 
       // 2. 延迟初始化粒子系统 (确保有宽高)
-      if (!stateRef.current.isInit) {
+      if (!stateRef.current.isInit && width > 0 && height > 0) {
         stateRef.current.e0 = initE0(width, height, particleCount, colors);
         stateRef.current.isInit = true;
       }

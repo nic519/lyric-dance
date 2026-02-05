@@ -31,4 +31,5 @@ export interface VisualMusicTweakOptions {
   particleCount: number;
   blurStrength: number;
   orbSize: number;
+  colors?: string[];
 }

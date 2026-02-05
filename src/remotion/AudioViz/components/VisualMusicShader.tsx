@@ -16,14 +16,11 @@ export const VisualMusicShader: React.FC<{
   const { render } = useVisualMusic2D(
     canvasEl,
     width,
-    height,
-    {
-      intensity: 1.5,
-      trail: 0.1,
-      particleCount: 40,
-      blurStrength: 15,
-      orbSize: 25
-    }
+    height, {
+    particleCount: 3,
+    colors: ['#0066FF', '#FF0055', '#FFD500'],
+  }
+
   );
 
   useEffect(() => {

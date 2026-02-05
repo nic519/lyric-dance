@@ -39,5 +39,5 @@ out/
 build
 
 /.agents
-/public/demo/*
+/public/*
 /.trae

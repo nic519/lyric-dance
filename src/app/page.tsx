@@ -26,6 +26,8 @@ import { AudioVizProps, defaultAudioVizProps } from "../remotion/AudioViz/schema
 
 import { loadFonts } from "../remotion/load-fonts";
 
+import { FONT_OPTIONS, BACKGROUND_OPTIONS } from "../../types/options";
+
 loadFonts();
 
 type BackgroundType = AudioVizProps["backgroundType"];
@@ -59,27 +61,11 @@ const Home: NextPage = () => {
     };
   }, [audioSrc, fontFamily, fontSize, srtSrc, backgroundType, coverImg, songTitle, artistName, description]);
 
-  const fontOptions = [
-    { value: "'Noto Sans SC', sans-serif", label: "Noto Sans SC (思源黑体)" },
-    { value: "'Noto Serif SC', serif", label: "Noto Serif SC (思源宋体)" },
-    { value: "'Ma Shan Zheng', cursive", label: "Ma Shan Zheng (马善政毛笔)" },
-    { value: "'ZCOOL KuaiLe', cursive", label: "ZCOOL KuaiLe (站酷快乐体)" },
-    { value: "'ZCOOL QingKe HuangYou', sans-serif", label: "ZCOOL HuangYou (站酷黄油)" },
-    { value: "'Long Cang', cursive", label: "Long Cang (龙苍行书)" },
-    { value: "'Zhi Mang Xing', cursive", label: "Zhi Mang Xing (志莽行书)" },
-    { value: "Inter, sans-serif", label: "Inter" },
-    { value: "Roboto, sans-serif", label: "Roboto" },
-    { value: "'Open Sans', sans-serif", label: "Open Sans" },
-    { value: "system-ui, sans-serif", label: "System UI" },
-  ];
+  const fontOptions = FONT_OPTIONS;
   const fontSizeOptions = [56, 64, 72, 80, 96];
 
-  const backgroundOptions = [
-    { value: "Aurora", label: "Aurora (Polar Lights)" },
-    { value: "NeonPulse", label: "Neon Pulse (Cyberpunk)" },
-    { value: "StarField", label: "Star Field (Space)" },
-    { value: "GradientWaves", label: "Gradient Waves (Flow)" },
-  ];
+  const backgroundOptions = BACKGROUND_OPTIONS;
+
 
   return (
     <div className="flex h-screen w-full flex-col bg-[#050505] text-slate-200 selection:bg-cyan-500/30">

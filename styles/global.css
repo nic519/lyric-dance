@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "GuoFengWuKong";
+  src: url("../public/fonts/GuoFengWuKongXingShuFanTi-2.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --background: #fff;
   --foreground: #000;

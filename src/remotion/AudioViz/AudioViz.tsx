@@ -82,7 +82,8 @@ export const AudioViz: React.FC<AudioVizProps> = ({
         fontSize={fontSize}
       />
 
-      <ProgressWaveform audioSrc={audioSrc} />
+      {/* <ProgressWaveform audioSrc={audioSrc} /> */}
+
     </AbsoluteFill>
   );
 };

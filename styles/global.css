@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "GuoFengWuKong";
-  src: url("../public/fonts/GuoFengWuKongXingShuFanTi-2.ttf") format("truetype");
+  font-family: "TengXiangXiaoXiaoXinTiJian";
+  src: url("../public/fonts/TengXiangXiaoXiaoXinTiJian-2.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -62,6 +62,7 @@
     0% {
       opacity: 1;
     }
+
     100% {
       opacity: 0.15;
     }

@@ -1,8 +1,8 @@
 "use client";
 
-import { Player } from "@remotion/player";
+import { Player, PlayerRef } from "@remotion/player";
 import type { NextPage } from "next";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import {
   defaultMyCompProps,
   DURATION_IN_FRAMES,
@@ -20,6 +20,7 @@ import {
 import { Tabs, TabsContent } from "../components/ui/tabs";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { PlayerControls } from "../components/PlayerControls";
 import { AudioViz } from "../remotion/AudioViz/AudioViz";
 import { Main } from "../remotion/MyComp/Main";
 import { AudioVizProps, defaultAudioVizProps } from "../remotion/AudioViz/schema";
@@ -34,6 +35,7 @@ type BackgroundType = AudioVizProps["backgroundType"];
 
 const Home: NextPage = () => {
   const [activeProjectId, setActiveProjectId] = useState("AudioViz");
+  const playerRef = useRef<PlayerRef>(null!);
 
   const [audioSrc, setAudioSrc] = useState(defaultAudioVizProps.audioSrc);
   const [srtSrc, setSrtSrc] = useState(defaultAudioVizProps.srtSrc);
@@ -125,9 +127,10 @@ const Home: NextPage = () => {
               <div className="overflow-hidden rounded-lg">
                 {activeProjectId === "AudioViz" ? (
                   <Player
+                    ref={playerRef}
                     component={AudioViz}
                     inputProps={audioVizInputProps}
-                    durationInFrames={30 * 10}
+                    durationInFrames={30 * 60}
                     fps={VIDEO_FPS}
                     compositionHeight={1920}
                     compositionWidth={1080}
@@ -136,13 +139,14 @@ const Home: NextPage = () => {
                       width: "360px",
                       height: "640px",
                     }}
-                    controls
+                    controls={false}
                     autoPlay
                     loop
                     initiallyMuted
                   />
                 ) : (
                   <Player
+                    ref={playerRef}
                     component={Main}
                     inputProps={defaultMyCompProps}
                     durationInFrames={DURATION_IN_FRAMES}
@@ -154,7 +158,7 @@ const Home: NextPage = () => {
                       width: "640px",
                       aspectRatio: `${VIDEO_WIDTH} / ${VIDEO_HEIGHT}`,
                     }}
-                    controls
+                    controls={false}
                     autoPlay
                     loop
                     initiallyMuted
@@ -162,6 +166,14 @@ const Home: NextPage = () => {
                 )}
               </div>
             </div>
+
+            <PlayerControls
+              playerRef={playerRef}
+              audioSrc={activeProjectId === "AudioViz" ? audioSrc : ""}
+              durationInFrames={activeProjectId === "AudioViz" ? 30 * 60 : DURATION_IN_FRAMES}
+              fps={VIDEO_FPS}
+            />
+
             <div className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-3 py-1 text-[10px] text-slate-500 backdrop-blur">
               <span>{activeProjectId === "AudioViz" ? "1080x1920" : `${VIDEO_WIDTH}x${VIDEO_HEIGHT}`}</span>
               <span className="h-3 w-px bg-white/10" />

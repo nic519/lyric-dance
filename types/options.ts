@@ -1,13 +1,17 @@
 
 export const FONT_OPTIONS = [
-  { value: "'GuoFengWuKong', sans-serif", label: "Guo Feng Wu Kong (国风悟空)" },
-  { value: "'Noto Sans SC', sans-serif", label: "Noto Sans SC (思源黑体)" },
-  { value: "'Noto Serif SC', serif", label: "Noto Serif SC (思源宋体)" },
-  { value: "'Ma Shan Zheng', cursive", label: "Ma Shan Zheng (马善政毛笔)" },
-  { value: "'ZCOOL KuaiLe', cursive", label: "ZCOOL KuaiLe (站酷快乐体)" },
-  { value: "'ZCOOL QingKe HuangYou', sans-serif", label: "ZCOOL HuangYou (站酷黄油)" },
-  { value: "'Long Cang', cursive", label: "Long Cang (龙苍行书)" },
-  { value: "'Zhi Mang Xing', cursive", label: "Zhi Mang Xing (志莽行书)" },
+  // 繁体中文优先
+  { value: "'TengXiangXiaoXiaoXinTiJian', sans-serif", label: "Teng Xiang Xiao Xiao Xin Ti Jian (腾祥小小新体简)" },
+  { value: "'Noto Serif TC', serif", label: "Noto Serif TC (思源宋体·繁体)" },
+  { value: "'Klee One', cursive", label: "Klee One (克利字体·繁体手写)" },
+
+  // 简体中文
+  { value: "'Long Cang', cursive", label: "Long Cang (龙苍行书·简体)" },
+  { value: "'Ma Shan Zheng', cursive", label: "Ma Shan Zheng (马善政毛笔·简体)" },
+  { value: "'Zhi Mang Xing', cursive", label: "Zhi Mang Xing (志莽行书·简体)" },
+  { value: "'ZCOOL QingKe HuangYou', sans-serif", label: "ZCOOL HuangYou (站酷黄油·简体)" },
+
+  // 西文/通用
   { value: "Inter, sans-serif", label: "Inter" },
   { value: "Roboto, sans-serif", label: "Roboto" },
   { value: "'Open Sans', sans-serif", label: "Open Sans" },

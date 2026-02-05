@@ -21,7 +21,7 @@ const AudioVizPage: NextPage = () => {
       audioSrc: "demo/demo.mp3",
       srtSrc: "demo/demo.srt",
       backgroundType,
-      fontFamily: "Noto Sans SC",
+      fontFamily: "'TengXiangXiaoXiaoXinTiJian', sans-serif",
       fontSize: 80,
       songTitle,
       artistName,

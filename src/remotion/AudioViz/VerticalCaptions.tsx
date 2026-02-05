@@ -155,7 +155,7 @@ export const VerticalCaptions: React.FC<{
                             opacity: opacity * exitOpacity,
                             transform: `scale(${scale}) translate(${floatX + shakeX}px, ${floatY + shakeY}px)`,
                             filter: `blur(${blur}px) drop-shadow(0 0 10px rgba(255,255,255,0.5))`,
-                            fontFamily: fontFamily ?? "'Noto Sans SC', sans-serif",
+                            fontFamily: fontFamily ?? "'TengXiangXiaoXiaoXinTiJian', sans-serif",
                             marginBottom: "0.15em",
                             display: "inline-block",
                           }}

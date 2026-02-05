@@ -11,7 +11,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { resolveSrc } from "../utils";
-import { parseCaptionText } from "./utils/caption-utils";
+import { parseCaptionText, CaptionLine } from "./utils/caption-utils";
 
 const findCaptionAt = (captions: Caption[], timeMs: number) => {
   let lo = 0;
@@ -71,6 +71,17 @@ export const VerticalCaptions: React.FC<{
     return parseCaptionText(current.caption.text);
   }, [current]);
 
+  const autoZoomIndex = useMemo(() => {
+    if (lines.length !== 2) return -1;
+    const getLength = (line: CaptionLine) =>
+      line.segments.reduce((acc, seg) => acc + seg.text.length, 0);
+    const len0 = getLength(lines[0]);
+    const len1 = getLength(lines[1]);
+    if (len0 < len1) return 0;
+    if (len1 < len0) return 1;
+    return -1;
+  }, [lines]);
+
   if (!captions) return null;
   if (!current) return null;
 
@@ -108,7 +119,9 @@ export const VerticalCaptions: React.FC<{
             >
               {line.segments.map((segment, sIndex) => {
                 const chars = Array.from(segment.text);
-                const isZoom = segment.tags.some(t => t.type === 'zoom');
+                const isZoom =
+                  segment.tags.some((t) => t.type === "zoom") ||
+                  lIndex === autoZoomIndex;
                 const isShake = segment.tags.some(t => t.type === 'shake');
                 const colorTag = segment.tags.find(t => t.type === 'color');
                 const color = colorTag?.value || "white";

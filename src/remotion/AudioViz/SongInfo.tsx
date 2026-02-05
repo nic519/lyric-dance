@@ -49,12 +49,13 @@ export const SongInfo: React.FC<{
   const centerScale = interpolate(centerStrength, [0.5, 1], [0.9, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const centerY = interpolate(centerStrength, [0.5, 1], [20, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  // Bottom Mode Entrance (1 -> 0)
-  const bottomCoverOpacity = interpolate(centerStrength, [0.2, 0.4], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const bottomTitleOpacity = interpolate(centerStrength, [0.1, 0.3], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const bottomArtistOpacity = interpolate(centerStrength, [0.0, 0.2], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Small Mode Entrance (Top Right) (1 -> 0)
+  const smallCoverOpacity = interpolate(centerStrength, [0.2, 0.4], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const smallTitleOpacity = interpolate(centerStrength, [0.1, 0.3], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const smallArtistOpacity = interpolate(centerStrength, [0.0, 0.2], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  const bottomY = interpolate(centerStrength, [0, 1], [0, 20], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Move from top (small state) to further down/hidden when centering
+  const smallY = interpolate(centerStrength, [0, 1], [0, -20], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
 
   return (
@@ -86,10 +87,43 @@ export const SongInfo: React.FC<{
             </div>
           )}
           <div className="flex flex-col items-center gap-4 text-center">
+            {/* SVG Filter Definition for Noise Text */}
+            <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+              <defs>
+                <filter id="noise-text-filter">
+                  {/* Generate Noise */}
+                  <feTurbulence
+                    type="fractalNoise"
+                    baseFrequency="0.8"
+                    numOctaves="3"
+                    stitchTiles="stitch"
+                    seed={Math.floor(frame / 2)} // Animate noise every 2 frames
+                    result="noise"
+                  />
+                  {/* Desaturate (optional, but noise is usually colored) */}
+                  <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise" />
+
+                  {/* Adjust Noise Alpha/Intensity */}
+                  <feComponentTransfer in="grayNoise" result="softNoise">
+                    <feFuncA type="linear" slope="0.4" />
+                  </feComponentTransfer>
+
+                  {/* Clip Noise to Text Source Alpha */}
+                  <feComposite operator="in" in="softNoise" in2="SourceAlpha" result="maskedNoise" />
+
+                  {/* Blend Noise with Text Color */}
+                  <feBlend mode="multiply" in="maskedNoise" in2="SourceGraphic" />
+                </filter>
+              </defs>
+            </svg>
+
             {songTitle && (
               <h1
                 className="text-7xl text-white drop-shadow-xl tracking-wide leading-tight"
-                style={{ opacity: centerTitleOpacity }}
+                style={{
+                  opacity: centerTitleOpacity,
+                  filter: 'url(#noise-text-filter)',
+                }}
               >
                 {songTitle}
               </h1>
@@ -110,34 +144,26 @@ export const SongInfo: React.FC<{
         </div>
       </div>
 
-      {/* --- BOTTOM MODE LAYOUT --- */}
+      {/* --- SMALL MODE LAYOUT (Top Right) --- */}
       <div
         style={{
           position: 'absolute',
-          bottom: 260,
-          left: 80,
+          top: 80,
           right: 80,
+          left: 80, // Allow text to stretch left if needed, but mainly aligned right
           height: 120,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-start',
+          justifyContent: 'flex-end',
           gap: 32,
-          transform: `translateY(${bottomY}px)`,
+          transform: `translateY(${smallY}px)`,
         }}
       >
-        {coverImg && (
-          <div
-            className="h-28 w-28 shrink-0 rounded-2xl overflow-hidden border border-white/20 shadow-xl"
-            style={{ opacity: bottomCoverOpacity }}
-          >
-            <Img src={resolveSrc(coverImg)} className="w-full h-full object-cover" />
-          </div>
-        )}
-        <div className="flex flex-col justify-center min-w-0 gap-2">
+        <div className="flex flex-col justify-center items-end min-w-0 gap-2 text-right">
           {songTitle && (
             <h3
               className="text-6xl text-white truncate leading-none drop-shadow-md"
-              style={{ opacity: bottomTitleOpacity }}
+              style={{ opacity: smallTitleOpacity }}
             >
               {songTitle}
             </h3>
@@ -145,12 +171,21 @@ export const SongInfo: React.FC<{
           {artistName && (
             <p
               className="text-4xl text-white/80 tracking-wider truncate shadow-black drop-shadow-sm"
-              style={{ opacity: bottomArtistOpacity }}
+              style={{ opacity: smallArtistOpacity }}
             >
               {artistName}
             </p>
           )}
         </div>
+
+        {coverImg && (
+          <div
+            className="h-28 w-28 shrink-0 rounded-2xl overflow-hidden border border-white/20 shadow-xl"
+            style={{ opacity: smallCoverOpacity }}
+          >
+            <Img src={resolveSrc(coverImg)} className="w-full h-full object-cover" />
+          </div>
+        )}
       </div>
     </AbsoluteFill>
   );

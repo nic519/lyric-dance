@@ -6,6 +6,7 @@ import { StarField } from "./StarField";
 import { DarkVeilShader } from "./components/DarkVeilShader";
 import { AuroraShader } from "./components/AuroraShader";
 import { VisualMusicShader } from "./components/VisualMusicShader";
+import { ProgressWaveform } from "./components/ProgressWaveform";
 import { VerticalCaptions } from "./VerticalCaptions";
 import { resolveSrc } from "../utils";
 import React, { useEffect, useState } from "react";
@@ -79,6 +80,8 @@ export const AudioViz: React.FC<AudioVizProps> = ({
         fontFamily={fontFamily}
         fontSize={fontSize}
       />
+
+      <ProgressWaveform audioSrc={audioSrc} />
     </AbsoluteFill>
   );
 };

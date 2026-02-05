@@ -20,12 +20,12 @@ export type AudioVizProps = z.infer<typeof audioVizSchema>;
 
 export const defaultAudioVizProps: AudioVizProps = {
   audioSrc: "demo/demo.mp3",
-  srtSrc: "demo/demo-繁体.srt",
-  fontFamily: "'TengXiangXiaoXiaoXinTiJian', sans-serif",
+  srtSrc: "demo/demo.srt",
+  fontFamily: "'Long Cang', sans-serif",
   fontSize: 80,
   backgroundType: "Aurora",
   coverImg: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop",
-  songTitle: "长城",
+  songTitle: "大地",
   artistName: "时光旋律站",
   description: "A journey through the stars and beyond.",
 };

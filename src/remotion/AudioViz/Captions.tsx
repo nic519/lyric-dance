@@ -167,7 +167,7 @@ export const Captions: React.FC<{
                 fontSize,
                 lineHeight: `${lineHeight}px`,
                 fontFamily:
-                  "Inter, system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
+                  "Inter, system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei'",
                 textShadow:
                   "0 10px 40px rgba(0,0,0,0.55), 0 0 24px rgba(80,210,255,0.18)",
               }}
@@ -192,7 +192,7 @@ export const Captions: React.FC<{
                             // Map line progress to character progress
                             const a = lineStart + (charProgress * (lineEnd - lineStart) * 0.8);
                             const b = a + (0.2 / nLines);
-                            
+
                             const p = interpolate(progress, [a, b], [0, 1], {
                               extrapolateLeft: "clamp",
                               extrapolateRight: "clamp",

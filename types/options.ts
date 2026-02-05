@@ -2,7 +2,6 @@
 export const FONT_OPTIONS = [
   // 繁体中文优先
   { value: "'TengXiangXiaoXiaoXinTiJian', sans-serif", label: "Teng Xiang Xiao Xiao Xin Ti Jian (腾祥小小新体简)" },
-  { value: "'Noto Serif TC', serif", label: "Noto Serif TC (思源宋体·繁体)" },
   { value: "'Klee One', cursive", label: "Klee One (克利字体·繁体手写)" },
 
   // 简体中文

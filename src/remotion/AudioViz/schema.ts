@@ -21,7 +21,7 @@ export type AudioVizProps = z.infer<typeof audioVizSchema>;
 export const defaultAudioVizProps: AudioVizProps = {
   audioSrc: "demo/demo.mp3",
   srtSrc: "demo/demo.srt",
-  fontFamily: "'Long Cang', sans-serif",
+  fontFamily: "'Long Cang', cursive",
   fontSize: 80,
   backgroundType: "Aurora",
   coverImg: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop",

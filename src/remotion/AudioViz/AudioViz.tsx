@@ -73,6 +73,7 @@ export const AudioViz: React.FC<AudioVizProps> = ({
         artistName={artistName}
         description={description}
         captions={captions}
+        fontFamily={fontFamily}
       />
 
       <VerticalCaptions

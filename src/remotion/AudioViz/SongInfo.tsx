@@ -10,7 +10,8 @@ export const SongInfo: React.FC<{
   artistName?: string;
   description?: string;
   captions: Caption[] | null;
-}> = ({ coverImg, songTitle, artistName, description, captions }) => {
+  fontFamily?: string;
+}> = ({ coverImg, songTitle, artistName, description, captions, fontFamily }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
 
@@ -35,7 +36,7 @@ export const SongInfo: React.FC<{
 
   if (!coverImg && !songTitle && !artistName && !description) return null;
 
-  const FONT_FAMILY = "'Long Cang', cursive";
+  const FONT_FAMILY = fontFamily || "'Long Cang', cursive";
 
   // --- Animation Logic ---
 

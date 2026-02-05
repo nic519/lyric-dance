@@ -71,15 +71,15 @@ export const VerticalCaptions: React.FC<{
     return parseCaptionText(current.caption.text);
   }, [current]);
 
-  const autoZoomIndex = useMemo(() => {
-    if (lines.length !== 2) return -1;
+  const autoZoomIndices = useMemo(() => {
+    if (lines.length !== 2) return [];
     const getLength = (line: CaptionLine) =>
       line.segments.reduce((acc, seg) => acc + seg.text.length, 0);
     const len0 = getLength(lines[0]);
     const len1 = getLength(lines[1]);
-    if (len0 < len1) return 0;
-    if (len1 < len0) return 1;
-    return -1;
+    if (len0 < len1) return [0];
+    if (len1 < len0) return [1];
+    return [0, 1];
   }, [lines]);
 
   if (!captions) return null;
@@ -121,7 +121,7 @@ export const VerticalCaptions: React.FC<{
                 const chars = Array.from(segment.text);
                 const isZoom =
                   segment.tags.some((t) => t.type === "zoom") ||
-                  lIndex === autoZoomIndex;
+                  autoZoomIndices.includes(lIndex);
                 const isShake = segment.tags.some(t => t.type === 'shake');
                 const colorTag = segment.tags.find(t => t.type === 'color');
                 const color = colorTag?.value || "white";
@@ -145,7 +145,7 @@ export const VerticalCaptions: React.FC<{
 
                       const opacity = interpolate(spr, [0, 1], [0, 1]);
                       const baseScale = interpolate(spr, [0, 1], [2, 1]);
-                      const zoomScale = isZoom ? interpolate(spr, [0, 1], [1, 1.5]) : 1;
+                      const zoomScale = isZoom ? interpolate(spr, [0, 1], [1, 1.8]) : 1;
                       const scale = baseScale * zoomScale;
 
                       const blur = interpolate(spr, [0, 1], [20, 0]);

@@ -27,5 +27,5 @@ export const defaultAudioVizProps: AudioVizProps = {
   coverImg: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop",
   songTitle: "大地",
   artistName: "时光旋律站",
-  description: "A journey through the stars and beyond.",
+  description: "词：刘卓辉 曲：黄家驹",
 };

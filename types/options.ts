@@ -18,7 +18,6 @@ export const FONT_OPTIONS = [
 ] as const;
 
 export const BACKGROUND_OPTIONS = [
-  { value: "Aurora", label: "Aurora (Polar Lights)" },
   { value: "NeonPulse", label: "Neon Pulse (Cyberpunk)" },
   { value: "StarField", label: "Star Field (Space)" },
   { value: "DarkVeil", label: "Dark Veil (Mysterious)" },

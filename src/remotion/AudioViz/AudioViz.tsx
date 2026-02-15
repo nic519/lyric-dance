@@ -1,6 +1,5 @@
 import { AudioVizProps } from "./schema";
 import { AbsoluteFill, Audio, useDelayRender } from "remotion";
-import { Atmosphere } from "./Atmosphere";
 import { NeonPulse } from "./NeonPulse";
 import { StarField } from "./StarField";
 import { DarkVeilShader } from "./components/DarkVeilShader";
@@ -52,13 +51,11 @@ export const AudioViz: React.FC<AudioVizProps> = ({
         return <StarField audioSrc={audioSrc} />;
       case "DarkVeil":
         return <DarkVeilShader audioSrc={audioSrc} />;
-      case "AuroraShader":
-        return <AuroraShader audioSrc={audioSrc} />;
       case "VisualMusic":
         return <VisualMusicShader audioSrc={audioSrc} />;
-      case "Aurora":
+      case "AuroraShader":
       default:
-        return <Atmosphere audioSrc={audioSrc} />;
+        return <AuroraShader audioSrc={audioSrc} />;
     }
   };
 

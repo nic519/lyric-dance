@@ -14,7 +14,7 @@ const AudioVizPage: NextPage = () => {
   const [artistName, setArtistName] = useState("Cosmic Voyager");
   const [description, setDescription] = useState("A journey through the stars and beyond.");
   const [coverImg, setCoverImg] = useState("https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop");
-  const [backgroundType, setBackgroundType] = useState<"Aurora" | "NeonPulse" | "StarField" | "GradientWaves" | "CircularAudio" | "DarkVeil" | "AuroraShader" | "VisualMusic">("Aurora");
+  const [backgroundType, setBackgroundType] = useState<"NeonPulse" | "StarField" | "GradientWaves" | "CircularAudio" | "DarkVeil" | "AuroraShader">("AuroraShader");
 
   const inputProps = useMemo(() => {
     return {
@@ -64,7 +64,6 @@ const AudioVizPage: NextPage = () => {
               <SelectValue placeholder="Select background" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Aurora">Atmosphere (Default)</SelectItem>
               <SelectItem value="AuroraShader">Aurora (Shader)</SelectItem>
               <SelectItem value="CircularAudio">Circular Audio (Shader)</SelectItem>
               <SelectItem value="DarkVeil">Dark Veil (Shader)</SelectItem>

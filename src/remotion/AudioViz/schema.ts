@@ -23,7 +23,7 @@ export const defaultAudioVizProps: AudioVizProps = {
   srtSrc: "demo/demo.srt",
   fontFamily: "'Long Cang', cursive",
   fontSize: 80,
-  backgroundType: "Aurora",
+  backgroundType: "AuroraShader",
   coverImg: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop",
   songTitle: "大地",
   artistName: "时光旋律站",

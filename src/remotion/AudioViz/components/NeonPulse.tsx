@@ -1,7 +1,7 @@
 import { useAudioData, visualizeAudio } from "@remotion/media-utils";
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
-import { resolveSrc } from "../utils";
+import { resolveSrc } from "../../utils";
 
 export const NeonPulse: React.FC<{
   audioSrc: string;
@@ -28,7 +28,7 @@ export const NeonPulse: React.FC<{
   return (
     <AbsoluteFill className="bg-[#110011] overflow-hidden">
       {/* Center Grid */}
-      <div 
+      <div
         className="absolute inset-0 opacity-30"
         style={{
           background: `
@@ -47,7 +47,7 @@ export const NeonPulse: React.FC<{
           const delay = i * 0.5;
           const scale = interpolate((t + delay) % 4, [0, 4], [0.8, 2.5]);
           const opacity = interpolate((t + delay) % 4, [0, 2, 4], [0.6, 0.3, 0]);
-          
+
           return (
             <div
               key={i}
@@ -63,7 +63,7 @@ export const NeonPulse: React.FC<{
           );
         })}
       </AbsoluteFill>
-      
+
       <AbsoluteFill style={{ background: 'radial-gradient(circle, transparent, #110011 90%)' }} />
     </AbsoluteFill>
   );

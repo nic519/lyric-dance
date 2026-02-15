@@ -1,7 +1,7 @@
 import { AudioVizProps } from "./schema";
 import { AbsoluteFill, Audio, useDelayRender } from "remotion";
-import { NeonPulse } from "./NeonPulse";
-import { StarField } from "./StarField";
+import { NeonPulse } from "./components/NeonPulse";
+import { StarField } from "./components/StarField";
 import { DarkVeilShader } from "./components/DarkVeilShader";
 import { AuroraShader } from "./components/AuroraShader";
 import { VisualMusicShader } from "./components/VisualMusicShader";

@@ -1,7 +1,7 @@
 import { useAudioData, visualizeAudio } from "@remotion/media-utils";
 import React, { useMemo } from "react";
 import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
-import { resolveSrc } from "../utils";
+import { resolveSrc } from "../../utils";
 
 export const StarField: React.FC<{
   audioSrc: string;
